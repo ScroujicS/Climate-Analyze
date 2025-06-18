@@ -27,7 +27,8 @@ app.layout = html.Div([
         value=df["city"].unique()[0],
         id="city-dropdown"
     ),
-
+    html.Button("Выгрузить климатические данные в виде csv", id="btn-download-csv"),
+    dcc.Download(id="download-csv"),
     html.Div(id="graphs-output")
 ])
 
@@ -112,7 +113,13 @@ def update_graphs(selected_city):
         dcc.Graph(figure=fig_pressure),
         dcc.Graph(figure=fig_wind)
     ]
-
+@app.callback(
+    Output("download-csv", "data"),
+    Input("btn-download-csv", "n_clicks"),
+    prevent_initial_call=True
+)
+def download_csv(n_clicks):
+    return dcc.send_file("mock_climate_data.csv")
 # Главная страница (Flask)
 @server.route("/")
 def index():
